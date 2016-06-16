@@ -291,7 +291,11 @@
                                            (save-excursion (outline-next-heading) (point)))
                         (goto-char (match-beginning 0))
                         (org-element-timestamp-parser)))
+           (todo (org-element-property :todo-keyword elem))
            (smry (org-element-property :title elem))
+           (todo-smry (if (eq todo nil)
+                              smry
+                            (format "%s %s" todo smry)))
            (loc  (org-element-property :LOCATION elem))
            (id  (org-element-property :ID elem))
            (start (org-gcal--format-org2iso
@@ -318,7 +322,7 @@
                         (buffer-substring-no-properties
                          (plist-get (cadr elem) :contents-begin)
                          (plist-get (cadr elem) :contents-end)))) "")))
-      (org-gcal--post-event start end smry loc desc id nil skip-import))))
+      (org-gcal--post-event start end todo-smry loc desc id nil skip-import))))
 
 (defun org-gcal-request-authorization ()
   "Request OAuth authorization at AUTH-URL by launching `browse-url'.
